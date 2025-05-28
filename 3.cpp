@@ -1,14 +1,38 @@
 #include <iostream>
 #include <cmath>
 #include <limits>
-
-double getValue();
-void checkStep(const double step);
-double getY(const double x);
-bool isDomain(const double x);
-
 using namespace std;
 
+/**
+ * @brief Функция для безопасного ввода числового значения
+ * @return Введенное пользователем значение
+ */
+double getValue();
+
+/**
+ * @brief Функция для проверки корректности шага
+ * @param step - значение шага для проверки
+ */
+void checkStep(const double step);
+
+/**
+ * @brief Функция для вычисления значения y по заданному уравнению
+ * @param x - значение переменной x
+ * @return вычисленное значение y
+ */
+double getY(const double x);
+
+/**
+ * @brief Функция для проверки принадлежности x области определения функции
+ * @param x - значение переменной x для проверки
+ * @return true, если x принадлежит области определения, иначе false
+ */
+bool isDomain(const double x);
+
+/**
+ * @brief Точка входа в программу
+ * @return возвращает 0, если программа выполнена корректно
+ */
 int main()
 {
     cout << "Enter xn: ";
