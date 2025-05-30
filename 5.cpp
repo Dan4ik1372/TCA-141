@@ -5,107 +5,149 @@
 using namespace std;
 
 /**
- * @brief Функция для вычисления факториала (итеративная реализация)
- * @param n - число для вычисления факториала
- * @return вычисленный факториал
+ * @brief Считывает целое число с клавиатуры с проверкой ввода
+ * @return Считанное значение
  */
-unsigned long long factorial(int n) {
-    if (n < 0) return 0;
-    unsigned long long result = 1;
-    for (int i = 1; i <= n; ++i) {
-        result *= i;
-    }
-    return result;
-}
+int getValue();
 
 /**
- * @brief Функция для вычисления суммы первых n членов последовательности
- * @param n - количество членов последовательности
- * @return сумма первых n членов
+ * @brief Считывает вещественное число с клавиатуры с проверкой ввода
+ * @return Считанное значение
  */
-double sumFirstN(int n) {
-    double sum = 0.0;
-    for (int k = 1; k <= n; ++k) {
-        double term = pow(-1, k) * pow(k, 4) / factorial(k);
-        sum += term;
+double getDouble();
+
+/**
+ * @brief Проверяет, что введенное значение удовлетворяет условию n >= 1
+ * @param n Считанное значение
+ */
+void checkN(const int n);
+
+/**
+ * @brief Проверяет, что введенное значение удовлетворяет условию e > 0
+ * @param e Считанное значение
+ */
+void checkE(const double e);
+
+/**
+ * @brief Рассчитывает сумму n первых членов ряда с использованием рекуррентного выражения
+ * @param n Заданное число членов
+ * @return Сумма n первых членов ряда
+ */
+double sumN(const int n);
+
+/**
+ * @brief Рассчитывает следующий член ряда через рекуррентное выражение
+ * @param current Текущий член ряда
+ * @param k Текущий индекс (начинается с 1)
+ * @return Следующий член ряда
+ */
+double getNext(const double current, const int k);
+
+/**
+ * @brief Рассчитывает сумму первых членов ряда, не меньших по модулю e
+ * @param e Заданная точность
+ * @return Сумма первых членов ряда, не меньших по модулю e
+ */
+double sumE(const double e);
+
+int main()
+{
+    setlocale(LC_ALL, "Russian");
+    cout << "Вычисление суммы для ряда: ∑(k=1 to n) [(-1)^k * k^4 / k!]" << endl << endl;
+    
+    cout << "Введите число членов ряда для рассчета последовательности: ";
+    int n = getValue();
+    checkN(n);
+    cout << "Сумма первых " << n << " членов ряда равна " << sumN(n) << endl;
+    
+    cout << "Введите погрешность для рассчета последовательности: ";
+    double e = getDouble();
+    checkE(e);
+    cout << "Сумма членов ряда с точностью e равна " << sumE(e) << endl;
+    
+    return 0;
+}
+
+int getValue()
+{
+    int value = 0;
+    cin >> value;
+    if (cin.fail())
+    {
+        cout << "Ошибка ввода" << endl;
+        abort();
     }
+    return value;
+}
+
+double getDouble()
+{
+    double value = 0.0;
+    cin >> value;
+    if (cin.fail())
+    {
+        cout << "Ошибка ввода" << endl;
+        abort();
+    }
+    return value;
+}
+
+void checkN(const int n)
+{
+    if (n < 1)
+    {
+        cout << "Ошибка ввода: n должно быть >= 1" << endl;
+        abort();
+    }
+}
+
+void checkE(const double e)
+{
+    if (e <= 0)
+    {
+        cout << "Ошибка ввода: e должно быть > 0" << endl;
+        abort();
+    }
+}
+
+double sumN(const int n)
+{
+    double current = -1.0; // Первый член при k=1: (-1)^1 * 1^4 / 1! = -1
+    double sum = current;
+    
+    for (int k = 2; k <= n; k++)
+    {
+        current = getNext(current, k);
+        sum += current;
+    }
+    
     return sum;
 }
 
-/**
- * @brief Функция для вычисления суммы членов последовательности, не меньших по модулю e
- * @param e - минимальное значение по модулю
- * @return сумма подходящих членов последовательности
- */
-double sumGreaterThanE(double e) {
+double getNext(const double current, const int k)
+{
+    // Рекуррентное соотношение: a_k = a_{k-1} * (-1) * k^4 / (k! / (k-1)!) = a_{k-1} * (-1) * k^3 / (k)
+    // Упрощаем: a_k = a_{k-1} * (-1) * k^3 / k = a_{k-1} * (-1) * k^2
+    // Но это неверно, правильное соотношение:
+    // a_k = (-1)^k * k^4 / k!
+    // a_{k-1} = (-1)^{k-1} * (k-1)^4 / (k-1)!
+    // Тогда a_k = a_{k-1} * (-1) * k^4 / (k * (k-1)^4) = a_{k-1} * (-1) * k^3 / (k-1)^4
+    
+    return current * (-1.0) * pow(k, 4) / (k * pow(k-1, 3));
+}
+
+double sumE(const double e)
+{
+    double current = -1.0; // Первый член при k=1
     double sum = 0.0;
     int k = 1;
-    while (true) {
-        double term = pow(-1, k) * pow(k, 4) / factorial(k);
-        if (fabs(term) < e) break;
-        sum += term;
+    
+    while (fabs(current) >= e)
+    {
+        sum += current;
         k++;
+        current = getNext(current, k);
     }
+    
     return sum;
-}
-
-/**
- * @brief Функция для безопасного ввода целого числа
- * @return введенное пользователем число
- */
-int getIntInput() {
-    int value;
-    while (true) {
-        cin >> value;
-        if (cin.fail() || value <= 0) {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Ошибка ввода. Пожалуйста, введите положительное целое число: ";
-        } else {
-            break;
-        }
-    }
-    return value;
-}
-
-/**
- * @brief Функция для безопасного ввода вещественного числа
- * @return введенное пользователем число
- */
-double getDoubleInput() {
-    double value;
-    while (true) {
-        cin >> value;
-        if (cin.fail() || value <= 0) {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Ошибка ввода. Пожалуйста, введите положительное число: ";
-        } else {
-            break;
-        }
-    }
-    return value;
-}
-
-/**
- * @brief Точка входа в программу
- * @return 0 при успешном выполнении
- */
-int main() {
-    cout << "Вычисление суммы для ряда варианта 5:" << endl;
-    cout << "∑(k=1 to n) [(-1)^k * k^4 / k!]" << endl << endl;
-
-    // Часть a: сумма первых n членов
-    cout << "Часть a: сумма первых n членов" << endl;
-    cout << "Введите n: ";
-    int n = getIntInput();
-    cout << "Сумма первых " << n << " членов: " << sumFirstN(n) << endl << endl;
-
-    // Часть b: сумма членов, не меньших по модулю e
-    cout << "Часть b: сумма членов, не меньших по модулю e" << endl;
-    cout << "Введите e: ";
-    double e = getDoubleInput();
-    cout << "Сумма членов, не меньших по модулю " << e << ": " << sumGreaterThanE(e) << endl;
-
-    return 0;
 }
