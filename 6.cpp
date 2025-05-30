@@ -1,88 +1,9 @@
 #include <iostream>
-#include <vector>
 #include <cstdlib>
 #include <ctime>
 #include <limits>
 
 using namespace std;
-
-/**
- * @brief Функция для заполнения массива случайными числами
- * @param arr - ссылка на вектор для заполнения
- * @param n - размер массива
- * @param min - минимальное значение
- * @param max - максимальное значение
- */
-void fillRandom(vector<int>& arr, int n, int min, int max) {
-    arr.resize(n);
-    for (int i = 0; i < n; ++i) {
-        arr[i] = rand() % (max - min + 1) + min;
-    }
-}
-
-/**
- * @brief Функция для заполнения массива с клавиатуры
- * @param arr - ссылка на вектор для заполнения
- * @param n - размер массива
- */
-void fillManual(vector<int>& arr, int n) {
-    arr.resize(n);
-    cout << "Введите " << n << " целых чисел:" << endl;
-    for (int i = 0; i < n; ++i) {
-        cin >> arr[i];
-        while (cin.fail()) {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Ошибка ввода. Пожалуйста, введите целое число: ";
-            cin >> arr[i];
-        }
-    }
-}
-
-/**
- * @brief Функция для замены последних k элементов на противоположные
- * @param arr - ссылка на вектор
- * @param k - количество элементов для замены
- */
-void invertLastKElements(vector<int>& arr, int k) {
-    if (k <= 0 || k > arr.size()) return;
-    
-    for (size_t i = arr.size() - k; i < arr.size(); ++i) {
-        arr[i] = -arr[i];
-    }
-}
-
-/**
- * @brief Функция для вывода индексов элементов, кратных 3
- * @param arr - вектор для поиска
- */
-void printIndicesDivisibleBy3(const vector<int>& arr) {
-    cout << "Индексы элементов, кратных 3: ";
-    bool found = false;
-    for (size_t i = 0; i < arr.size(); ++i) {
-        if (arr[i] % 3 == 0) {
-            cout << i << " ";
-            found = true;
-        }
-    }
-    if (!found) cout << "таких элементов нет";
-    cout << endl;
-}
-
-/**
- * @brief Функция для проверки наличия пары соседних элементов с заданной суммой
- * @param arr - вектор для поиска
- * @param target - целевая сумма
- * @return true, если такая пара найдена, иначе false
- */
-bool hasPairWithSum(const vector<int>& arr, int target) {
-    for (size_t i = 0; i < arr.size() - 1; ++i) {
-        if (arr[i] + arr[i + 1] == target) {
-            return true;
-        }
-    }
-    return false;
-}
 
 /**
  * @brief Функция для безопасного ввода целого числа с проверкой диапазона
@@ -109,6 +30,92 @@ int getIntInput(const string& prompt, int min, int max) {
 }
 
 /**
+ * @brief Функция для заполнения массива случайными числами
+ * @param arr - указатель на массив для заполнения
+ * @param n - размер массива
+ * @param min - минимальное значение
+ * @param max - максимальное значение
+ */
+void fillRandom(int* arr, int n, int min, int max) {
+    for (int i = 0; i < n; ++i) {
+        arr[i] = rand() % (max - min + 1) + min;
+    }
+}
+
+/**
+ * @brief Функция для заполнения массива с клавиатуры
+ * @param arr - указатель на массив для заполнения
+ * @param n - размер массива
+ */
+void fillManual(int* arr, int n) {
+    cout << "Введите " << n << " целых чисел:" << endl;
+    for (int i = 0; i < n; ++i) {
+        arr[i] = getIntInput("arr[" + to_string(i) + "] = ", -100, 100);
+    }
+}
+
+/**
+ * @brief Функция для замены последних k элементов на противоположные
+ * @param arr - указатель на массив
+ * @param n - размер массива
+ * @param k - количество элементов для замены
+ */
+void invertLastKElements(int* arr, int n, int k) {
+    if (k <= 0 || k > n) return;
+
+    for (int i = n - k; i < n; ++i) {
+        arr[i] = -arr[i];
+    }
+}
+
+/**
+ * @brief Функция для вывода индексов элементов, кратных 3
+ * @param arr - указатель на массив
+ * @param n - размер массива
+ */
+void printIndicesDivisibleBy3(const int* arr, int n) {
+    cout << "Индексы элементов, кратных 3: ";
+    bool found = false;
+    for (int i = 0; i < n; ++i) {
+        if (arr[i] % 3 == 0) {
+            cout << i << " ";
+            found = true;
+        }
+    }
+    if (!found) cout << "таких элементов нет";
+    cout << endl;
+}
+
+/**
+ * @brief Функция для проверки наличия пары соседних элементов с заданной суммой
+ * @param arr - указатель на массив
+ * @param n - размер массива
+ * @param target - целевая сумма
+ * @return true, если такая пара найдена, иначе false
+ */
+bool hasPairWithSum(const int* arr, int n, int target) {
+    for (int i = 0; i < n - 1; ++i) {
+        if (arr[i] + arr[i + 1] == target) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * @brief Функция для вывода массива
+ * @param arr - указатель на массив
+ * @param n - размер массива
+ */
+void printArray(const int* arr, int n) {
+    cout << "Массив: ";
+    for (int i = 0; i < n; ++i) {
+        cout << arr[i] << " ";
+    }
+    cout << endl;
+}
+
+/**
  * @brief Точка входа в программу
  * @return 0 при успешном выполнении
  */
@@ -123,12 +130,14 @@ int main() {
     // Ввод размера массива
     int n = getIntInput("Введите размер массива (1-100): ", 1, 100);
 
+    // Выделение памяти для массива
+    int* arr = new int[n];
+
     // Выбор способа заполнения массива
-    vector<int> arr;
     cout << "Выберите способ заполнения массива:" << endl;
     cout << "1 - случайные числа [-100; 100]" << endl;
     cout << "2 - ввод с клавиатуры" << endl;
-    
+
     int choice = getIntInput("Ваш выбор: ", 1, 2);
     if (choice == 1) {
         fillRandom(arr, n, -100, 100);
@@ -137,32 +146,30 @@ int main() {
     }
 
     // Вывод массива
-    cout << "Массив: ";
-    for (int num : arr) {
-        cout << num << " ";
-    }
-    cout << endl << endl;
+    printArray(arr, n);
+    cout << endl;
 
     // Задача 1: Замена последних k элементов
     int k = getIntInput("Введите k для замены последних элементов (1-" + to_string(n) + "): ", 1, n);
-    invertLastKElements(arr, k);
+    invertLastKElements(arr, n, k);
     cout << "Массив после замены: ";
-    for (int num : arr) {
-        cout << num << " ";
-    }
-    cout << endl << endl;
+    printArray(arr, n);
+    cout << endl;
 
     // Задача 2: Индексы элементов, кратных 3
-    printIndicesDivisibleBy3(arr);
+    printIndicesDivisibleBy3(arr, n);
     cout << endl;
 
     // Задача 3: Проверка пары с заданной суммой
     int target = getIntInput("Введите число для проверки суммы соседних элементов: ", -200, 200);
-    if (hasPairWithSum(arr, target)) {
+    if (hasPairWithSum(arr, n, target)) {
         cout << "В массиве есть соседние элементы с суммой " << target << endl;
     } else {
         cout << "В массиве нет соседних элементов с суммой " << target << endl;
     }
+
+    // Освобождение памяти
+    delete[] arr;
 
     return 0;
 }
