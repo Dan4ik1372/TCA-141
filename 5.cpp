@@ -53,7 +53,7 @@ double sumE(const double e);
 int main()
 {
     setlocale(LC_ALL, "Russian");
-    cout << "Вычисление суммы для ряда: ∑(k=1 to n) [(-1)^k * k^4 / k!]" << endl << endl;
+    cout << "Вычисление суммы для ряда: (k=1 to n) [(-1)^k * k^4 / k!]" << endl << endl;
     
     cout << "Введите число членов ряда для рассчета последовательности: ";
     int n = getValue();
