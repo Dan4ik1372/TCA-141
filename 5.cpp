@@ -145,8 +145,8 @@ double sumE(const double e)
     while (fabs(current) >= e)
     {
         sum += current;
-        k++;
         current = getNext(current, k);
+        k++;
     }
     
     return sum;
