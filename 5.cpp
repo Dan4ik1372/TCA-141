@@ -115,7 +115,7 @@ double sumN(const int n)
     double current = -1.0; // Первый член при k=1: (-1)^1 * 1^4 / 1! = -1
     double sum = current;
     
-    for (int k = 2; k <= n; k++)
+    for (int k = 1; k < n; k++)
     {
         current = getNext(current, k);
         sum += current;
