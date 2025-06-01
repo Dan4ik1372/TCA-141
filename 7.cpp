@@ -4,94 +4,148 @@
 
 using namespace std;
 
-// Объявления функций (прототипы)
+/**
+ * @brief Считывает целое число с клавиатуры с проверкой ввода
+ * @return Считанное значение
+ */
 int getValue();
 
+/**
+ * @brief Считывает размер массива с проверкой ввода
+ * @return Считанный размер
+ */
 size_t getSize();
 
+/**
+ * @brief Проверяет, что введенное значение удовлетворяет условию n > 0
+ * @param n Считанное значение
+ */
 void checkN(const int n);
 
-int** getNewArray(const size_t m, const size_t n);
+/**
+ * @brief Создает двумерный массив заданного размера
+ * @param m Количество строк
+ * @param n Количество столбцов
+ * @return Указатель на созданный массив
+ */
+int** createArray(const size_t m, const size_t n);
 
+/**
+ * @brief Выводит массив на экран
+ * @param array Массив для вывода
+ * @param m Количество строк
+ * @param n Количество столбцов
+ */
 void printArray(int** array, const size_t m, const size_t n);
 
+/**
+ * @brief Заполняет массив вручную с клавиатуры
+ * @param array Массив для заполнения
+ * @param m Количество строк
+ * @param n Количество столбцов
+ */
 void fillArray(int** array, const size_t m, const size_t n);
 
+/**
+ * @brief Находит индекс максимального элемента в строке
+ * @param row Указатель на строку массива
+ * @param n Количество элементов в строке
+ * @return Индекс максимального элемента
+ */
+size_t getMaxIndexInRow(int* row, const size_t n);
+
+/**
+ * @brief Инвертирует знак максимального элемента в каждой строке
+ * @param array Массив для обработки
+ * @param m Количество строк
+ * @param n Количество столбцов
+ */
 void invertMaxInRows(int** array, const size_t m, const size_t n);
 
-size_t getMaxIndexInLine(int* array, const size_t n);
-
-void deleteArray(int** array, const size_t m, const size_t n);
-
-int** copyArray(int** array, const size_t m, const size_t n);
-
-bool containsMaxElement(int** array, const size_t m, const size_t n, size_t col);
-
-void insertZeroAfterMaxColumns(int**& array, size_t& m, size_t& n);
-
-void fillRandom(int** array, const size_t m, const size_t n, const int start, const int end);
-
+/**
+ * @brief Находит максимальный элемент во всем массиве
+ * @param array Массив для поиска
+ * @param m Количество строк
+ * @param n Количество столбцов
+ * @return Максимальный элемент
+ */
 int findMaxElement(int** array, const size_t m, const size_t n);
 
-enum { RANDOM = 5, MANUAL = 6 };
+/**
+ * @brief Проверяет наличие максимального элемента в указанном столбце
+ * @param array Массив для проверки
+ * @param m Количество строк
+ * @param col Индекс столбца для проверки
+ * @param maxElement Искомый максимальный элемент
+ * @return true если элемент найден, иначе false
+ */
+bool hasMaxElement(int** array, const size_t m, size_t col, int maxElement);
+
+/**
+ * @brief Вставляет столбцы с нулями после столбцов, содержащих максимальный элемент
+ * @param array Ссылка на указатель массива
+ * @param m Ссылка на количество строк
+ * @param n Ссылка на количество столбцов
+ */
+void insertZeroColumns(int**& array, size_t& m, size_t& n);
+
+/**
+ * @brief Освобождает память, занятую массивом
+ * @param array Массив для удаления
+ * @param m Количество строк
+ * @param n Количество столбцов
+ */
+void deleteArray(int** array, const size_t m, const size_t n);
+
+/**
+ * @brief Создает копию массива
+ * @param array Массив для копирования
+ * @param m Количество строк
+ * @param n Количество столбцов
+ * @return Указатель на копию массива
+ */
+int** copyArray(int** array, const size_t m, const size_t n);
 
 int main()
 {
-    cout << "Enter m: ";
+    cout << "Введите количество строк (m): ";
     size_t m = getSize();
-    cout << "Enter n: ";
+    cout << "Введите количество столбцов (n): ";
     size_t n = getSize();
     
-    int** array = getNewArray(m, n);
+    int** originalArray = createArray(m, n);
     
-    cout << "Enter the way to fill array: " << (int)MANUAL <<
-        " to fill manually, " << (int)RANDOM << " to fill randomly: ";
-    int choice = getValue();
-    int start = 0;
-    int end = 0;
+    // Заполняем массив вручную
+    fillArray(originalArray, m, n);
     
-    switch (choice)
-    {    
-        case RANDOM:    
-            cout << "Enter start: ";
-            start = getValue();
-            cout << "Enter end: ";
-            end = getValue();
-            fillRandom(array, m, n, start, end);
-            break;
-        case MANUAL:    
-            fillArray(array, m, n);
-            break;
-        default:
-            cerr << "Error: Invalid choice!" << endl;
-            deleteArray(array, m, n);
-            return 1;
-    }
+    // Создаем копию исходного массива
+    int** workingArray = copyArray(originalArray, m, n);
     
-    cout << "\nOriginal array:" << endl;
-    printArray(array, m, n);
+    cout << "\nИсходный массив:" << endl;
+    printArray(originalArray, m, n);
     
-    // Task 1: Invert max elements in rows
-    invertMaxInRows(array, m, n);
-    cout << "\nAfter inverting max elements in rows:" << endl;
-    printArray(array, m, n);
+    // Задание 1: Инвертировать максимальные элементы в строках
+    invertMaxInRows(workingArray, m, n);
+    cout << "\nПосле инверсии максимальных элементов в строках:" << endl;
+    printArray(workingArray, m, n);
     
-    // Task 2: Insert zero columns after columns with max element
-    insertZeroAfterMaxColumns(array, m, n);
-    cout << "\nAfter inserting zero columns:" << endl;
-    printArray(array, m, n);
+    // Задание 2: Вставить нулевые столбцы после столбцов с максимальным элементом
+    insertZeroColumns(workingArray, m, n);
+    cout << "\nПосле вставки нулевых столбцов:" << endl;
+    printArray(workingArray, m, n);
     
-    deleteArray(array, m, n);
+    // Освобождаем память
+    deleteArray(originalArray, m, n);
+    deleteArray(workingArray, m, n);
+    
     return 0;
 }
 
-// Реализации функций (определения)
-
 int getValue()
 {
-    double value;
+    int value;
     if (!(cin >> value)) {
-        cerr << "Input error! Program terminated." << endl;
+        cerr << "Ошибка ввода! Программа завершена." << endl;
         exit(EXIT_FAILURE);
     }
     return value;
@@ -99,7 +153,7 @@ int getValue()
 
 size_t getSize()
 {
-    double n = getValue();
+    int n = getValue();
     checkN(n);
     return static_cast<size_t>(n);
 }
@@ -107,16 +161,16 @@ size_t getSize()
 void checkN(const int n)
 {
     if (n <= 0) {
-        cerr << "Error: Size must be positive!" << endl;
+        cerr << "Ошибка: Размер должен быть положительным!" << endl;
         exit(EXIT_FAILURE);
     }
 }
 
-int** getNewArray(const size_t m, const size_t n)
+int** createArray(const size_t m, const size_t n)
 {
     int** array = new int*[m];
     for (size_t i = 0; i < m; i++) {
-        array[i] = new int[n]();  // Инициализация нулями
+        array[i] = new int[n]();
     }
     return array;
 }
@@ -135,27 +189,17 @@ void fillArray(int** array, const size_t m, const size_t n)
 {
     for (size_t i = 0; i < m; i++) {
         for (size_t j = 0; j < n; j++) {
-            cout << "Enter array[" << i << "][" << j << "]: ";
+            cout << "Введите элемент [" << i << "][" << j << "]: ";
             array[i][j] = getValue();
         }
     }
 }
 
-void fillRandom(int** array, const size_t m, const size_t n, const int start, const int end)
-{
-    srand(static_cast<unsigned>(time(nullptr)));
-    for (size_t i = 0; i < m; i++) {
-        for (size_t j = 0; j < n; j++) {
-            array[i][j] = rand() % (end - start + 1) + start;
-        }
-    }
-}
-
-size_t getMaxIndexInLine(int* array, const size_t n)
+size_t getMaxIndexInRow(int* row, const size_t n)
 {
     size_t maxIndex = 0;
     for (size_t i = 1; i < n; i++) {
-        if (array[i] > array[maxIndex]) {
+        if (row[i] > row[maxIndex]) {
             maxIndex = i;
         }
     }
@@ -165,33 +209,14 @@ size_t getMaxIndexInLine(int* array, const size_t n)
 void invertMaxInRows(int** array, const size_t m, const size_t n)
 {
     for (size_t i = 0; i < m; i++) {
-        size_t maxIndex = getMaxIndexInLine(array[i], n);
+        size_t maxIndex = getMaxIndexInRow(array[i], n);
         array[i][maxIndex] = -array[i][maxIndex];
     }
 }
 
-int** copyArray(int** array, const size_t m, const size_t n)
-{
-    int** newArray = getNewArray(m, n);
-    for (size_t i = 0; i < m; i++) {
-        for (size_t j = 0; j < n; j++) {
-            newArray[i][j] = array[i][j];
-        }
-    }
-    return newArray;
-}
-
-void deleteArray(int** array, const size_t m, const size_t n)
-{
-    for (size_t i = 0; i < m; i++) {
-        delete[] array[i];
-    }
-    delete[] array;
-}
-
 int findMaxElement(int** array, const size_t m, const size_t n)
 {
-    double maxElement = array[0][0];
+    int maxElement = array[0][0];
     for (size_t i = 0; i < m; i++) {
         for (size_t j = 0; j < n; j++) {
             if (array[i][j] > maxElement) {
@@ -202,9 +227,8 @@ int findMaxElement(int** array, const size_t m, const size_t n)
     return maxElement;
 }
 
-bool containsMaxElement(int** array, const size_t m, const size_t n, size_t col)
+bool hasMaxElement(int** array, const size_t m, size_t col, int maxElement)
 {
-    double maxElement = findMaxElement(array, m, n);
     for (size_t i = 0; i < m; i++) {
         if (array[i][col] == maxElement) {
             return true;
@@ -213,49 +237,61 @@ bool containsMaxElement(int** array, const size_t m, const size_t n, size_t col)
     return false;
 }
 
-void insertZeroAfterMaxColumns(int**& array, size_t& m, size_t& n)
+void insertZeroColumns(int**& array, size_t& m, size_t& n)
 {
-    // Определяем, после каких столбцов нужно вставить нулевые
-    vector<bool> insertAfter(n, false);
-    double maxElement = findMaxElement(array, m, n);
-    size_t newColumns = 0;
-
+    int maxElement = findMaxElement(array, m, n);
+    
+    // Считаем столбцы с максимальным элементом
+    size_t columnsToAdd = 0;
     for (size_t j = 0; j < n; j++) {
-        for (size_t i = 0; i < m; i++) {
-            if (array[i][j] == maxElement) {
-                insertAfter[j] = true;
-                newColumns++;
-                break;
-            }
+        if (hasMaxElement(array, m, j, maxElement)) {
+            columnsToAdd++;
         }
     }
-
-    if (newColumns == 0) return;
-
-    // Создаем новый массив с дополнительными столбцами
-    size_t newN = n + newColumns;
-    int** newArray = getNewArray(m, newN);
-
-    // Копируем данные и вставляем нулевые столбцы
+    
+    if (columnsToAdd == 0) return;
+    
+    size_t newN = n + columnsToAdd;
+    int** newArray = createArray(m, newN);
+    
     size_t newCol = 0;
     for (size_t j = 0; j < n; j++) {
-        // Копируем текущий столбец
+        // Копируем оригинальный столбец
         for (size_t i = 0; i < m; i++) {
             newArray[i][newCol] = array[i][j];
         }
         newCol++;
-
-        // Вставляем нулевой столбец после столбцов с максимальным элементом
-        if (insertAfter[j]) {
+        
+        // Добавляем нулевой столбец если нужно
+        if (hasMaxElement(array, m, j, maxElement)) {
             for (size_t i = 0; i < m; i++) {
                 newArray[i][newCol] = 0;
             }
             newCol++;
         }
     }
-
-    // Удаляем старый массив и обновляем указатель и размер
+    
+    // Заменяем старый массив новым
     deleteArray(array, m, n);
     array = newArray;
     n = newN;
+}
+
+void deleteArray(int** array, const size_t m, const size_t n)
+{
+    for (size_t i = 0; i < m; i++) {
+        delete[] array[i];
+    }
+    delete[] array;
+}
+
+int** copyArray(int** array, const size_t m, const size_t n)
+{
+    int** newArray = createArray(m, n);
+    for (size_t i = 0; i < m; i++) {
+        for (size_t j = 0; j < n; j++) {
+            newArray[i][j] = array[i][j];
+        }
+    }
+    return newArray;
 }
