@@ -117,6 +117,10 @@ void deleteArray(int** array, const size_t rows, const size_t cols);
  */
 int** copyArray(int** array, const size_t rows, const size_t cols);
 
+/**
+@brief Главная функция программы, выполняющая основную логику работы
+@return int Возвращает 0 при успешном выполнении программы
+*/
 int main()
 {
     cout << "Введите количество строк (m): ";
