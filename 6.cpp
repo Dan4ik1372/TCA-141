@@ -153,7 +153,7 @@ void replaceLastK(int* arr, const int n, int k) {
         return;
     }
     
-    for (size_t i = n - k; i < n; i++) {
+    for (size_t i = n - 1 - k; i < n; i++) {
         arr[i] = -arr[i];
     }
 }
